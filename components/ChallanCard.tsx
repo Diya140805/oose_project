@@ -1,7 +1,14 @@
 // components/ChallanCard.tsx
 import { motion } from 'framer-motion';
 
-const ChallanCard = ({ challan }: { challan: any }) => {
+interface Challan {
+  id: number;
+  amount: number;
+  reason: string;
+  status: string;
+}
+
+const ChallanCard = ({ challan }: { challan: Challan }) => {
   return (
     <motion.div
       whileHover={{ scale: 1.05 }}

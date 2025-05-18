@@ -1,7 +1,14 @@
 // components/LicenseCard.tsx
 import { motion } from 'framer-motion';
 
-const LicenseCard = ({ license }: { license: any }) => {
+interface License {
+  id: number;
+  license_number: string;
+  expiry_date: string;
+  status: string;
+}
+
+const LicenseCard = ({ license }: { license: License }) => {
   return (
     <motion.div
       whileHover={{ scale: 1.05 }}
