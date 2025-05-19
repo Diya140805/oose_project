@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
+import Link from 'next/link'; // ✅ Import Link
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/lib/supabaseClient';
@@ -93,6 +94,14 @@ const Login = () => {
             Login
           </Button>
         </div>
+
+        {/* ✅ Register link */}
+        <p className="mt-6 text-center text-sm text-gray-700">
+          Don&apos;t have an account?{' '}
+          <Link href="/register" className="text-blue-600 hover:underline">
+            Register here
+          </Link>
+        </p>
       </motion.div>
     </div>
   );
