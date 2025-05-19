@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
-import Link from 'next/link'; // ✅ Import Link
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/lib/supabaseClient';
@@ -42,6 +42,9 @@ const Login = () => {
       return;
     }
 
+    // ✅ Store user ID in localStorage
+    localStorage.setItem('userId', data.id);
+
     toast.success('Login successful');
     setTimeout(() => {
       if (role === 'user') {
@@ -70,14 +73,12 @@ const Login = () => {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
           />
           <Input
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
           />
           <select
             value={role}
@@ -95,7 +96,6 @@ const Login = () => {
           </Button>
         </div>
 
-        {/* ✅ Register link */}
         <p className="mt-6 text-center text-sm text-gray-700">
           Don&apos;t have an account?{' '}
           <Link href="/register" className="text-blue-600 hover:underline">

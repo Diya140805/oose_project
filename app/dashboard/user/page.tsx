@@ -1,4 +1,3 @@
-// app/(dashboard)/user/page.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -15,16 +14,32 @@ interface Challan {
 
 const UserDashboard = () => {
   const [challans, setChallans] = useState<Challan[]>([]);
-  const userId = 1; // Replace with actual user ID from session
+  const [userId, setUserId] = useState<number | null>(null);
 
   useEffect(() => {
-    fetchChallans();
+    const id = localStorage.getItem('userId');
+    if (id) {
+      setUserId(parseInt(id));
+    }
   }, []);
 
-  const fetchChallans = async () => {
-    const { data, error } = await supabase.from('challans').select('*').eq('user_id', userId);
-    if (error) console.error('Error fetching challans:', error);
-    else setChallans(data || []);
+  useEffect(() => {
+    if (userId) {
+      fetchChallans(userId);
+    }
+  }, [userId]);
+
+  const fetchChallans = async (id: number) => {
+    const { data, error } = await supabase
+      .from('challans')
+      .select('*')
+      .eq('user_id', id);
+
+    if (error) {
+      console.error('Error fetching challans:', error);
+    } else {
+      setChallans(data || []);
+    }
   };
 
   return (
@@ -46,7 +61,7 @@ const UserDashboard = () => {
                   <CardTitle>Challan #{challan.id}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p>Amount: ${challan.amount}</p>
+                  <p>Amount: ₹{challan.amount}</p>
                   <p>Reason: {challan.reason}</p>
                   <p>Status: {challan.status}</p>
                 </CardContent>
