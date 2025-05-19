@@ -1,4 +1,3 @@
-// app/(dashboard)/police/page.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -16,8 +15,15 @@ interface Challan {
   status: string;
 }
 
+interface User {
+  id: number;
+  name: string;
+  role: string;
+}
+
 const PoliceDashboard = () => {
   const [challans, setChallans] = useState<Challan[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [newChallan, setNewChallan] = useState({
     id: null as number | null,
     user_id: '',
@@ -28,6 +34,7 @@ const PoliceDashboard = () => {
 
   useEffect(() => {
     fetchChallans();
+    fetchUsers();
   }, []);
 
   const fetchChallans = async () => {
@@ -36,12 +43,21 @@ const PoliceDashboard = () => {
     else setChallans(data || []);
   };
 
+  const fetchUsers = async () => {
+    const { data, error } = await supabase
+      .from('users')
+      .select('id, name, role')
+      .eq('role', 'user');
+    if (error) console.error('Error fetching users:', error);
+    else setUsers(data || []);
+  };
+
   const addChallan = async () => {
     const { data, error } = await supabase
       .from('challans')
       .insert([{
-        user_id: newChallan.user_id,
-        amount: newChallan.amount,
+        user_id: parseInt(newChallan.user_id),
+        amount: parseFloat(newChallan.amount),
         reason: newChallan.reason,
         status: newChallan.status
       }])
@@ -59,8 +75,8 @@ const PoliceDashboard = () => {
     const { data, error } = await supabase
       .from('challans')
       .update({
-        user_id: newChallan.user_id,
-        amount: newChallan.amount,
+        user_id: parseInt(newChallan.user_id),
+        amount: parseFloat(newChallan.amount),
         reason: newChallan.reason,
         status: newChallan.status
       })
@@ -104,12 +120,20 @@ const PoliceDashboard = () => {
         <div className="mb-8">
           <h2 className="text-2xl font-bold mb-4">Add/Update Challan</h2>
           <div className="flex flex-col space-y-4">
-            <Input
-              type="number"
-              placeholder="User ID"
+            {/* User Dropdown */}
+            <select
               value={newChallan.user_id}
               onChange={(e) => setNewChallan({ ...newChallan, user_id: e.target.value })}
-            />
+              className="px-4 py-2 border rounded"
+            >
+              <option value="">Select User</option>
+              {users.map((user) => (
+                <option key={user.id} value={user.id}>
+                  {user.name} (ID: {user.id})
+                </option>
+              ))}
+            </select>
+
             <Input
               type="number"
               placeholder="Amount"
